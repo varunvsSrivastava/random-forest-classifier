@@ -169,6 +169,9 @@ Reported results:
 
 The test set contains 114 samples. Results may vary if the dataset, split, random seed, or model configuration changes.
 
+**Important observation:** The test confusion matrix contains 3 false negatives, meaning 3 malignant samples were predicted as benign. This highlights why recall and error analysis are important in medical classification. The model is for educational use only and must not be used for clinical diagnosis.
+
+
 ## Visualizations
 
 Generated reports are saved in the `reports/` directory:
@@ -195,13 +198,16 @@ The current test suite covers dataset loading, train-test splitting, model train
 - Accuracy alone does not establish that a model is suitable for medical diagnosis.
 - Feature importance indicates how the model uses features, not whether those features cause an outcome.
 
+
 ## Future Improvements
 
-- Add more comprehensive unit and integration tests.
-- Compare Random Forest against a Decision Tree and other classifiers.
-- Evaluate precision, recall, F1-score, and confusion matrices across validation folds.
+- Compare Random Forest with Decision Tree and other classification algorithms.
+- Evaluate precision, recall, F1-score, and confusion matrices across cross-validation folds.
+- Add edge-case tests and improve input validation.
 - Improve configuration management and reduce duplicated training logic.
 - Add a validated input interface for new samples.
+- Evaluate model performance on independent datasets.
+
 
 ## License
 
