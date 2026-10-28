@@ -1,4 +1,7 @@
 
+import joblib
+from pathlib import Path
+
 from sklearn.metrics import (
     accuracy_score,
     precision_score,
@@ -9,7 +12,6 @@ from sklearn.metrics import (
 )
 
 from src.prepare_data import split_dataset
-from src.train_model import train_model
 
 
 def evaluate_model(model, X_test, y_test):
@@ -48,10 +50,14 @@ def evaluate_model(model, X_test, y_test):
 
 
 if __name__ == "__main__":
-    model, _, X_test, _, y_test = train_model(
-        max_depth=5,
-        min_samples_split=2,
-        min_samples_leaf=1,
-    )
+    model_path = Path("models/random_forest_model.joblib")
+
+    if not model_path.exists():
+        raise FileNotFoundError(
+            "Saved model not found. Run python -m src.save_model first."
+        )
+
+    model = joblib.load(model_path)
+    _, X_test, _, y_test = split_dataset()
 
     evaluate_model(model, X_test, y_test)

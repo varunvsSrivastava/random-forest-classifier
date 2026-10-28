@@ -60,66 +60,49 @@ def tune_hyperparameters():
     
     return grid_search.best_estimator_,grid_search.best_params_, grid_search.best_score_
         
+
 def evaluate_best_model():
     """Evaluate the best tuned model on the held-out test set."""
-    
-    X_train,X_test,y_train,y_test = split_dataset()
-    
-    model = RandomForestClassifier(
-        n_estimators=100,random_state=42
-    )
-    
-    param_grid = {
-        "max_depth": [3,4,5],"min_samples_split": [2,10],"min_samples_leaf": [1,5]
-    }
-    
-    cv = StratifiedKFold(
-        n_splits=5,shuffle=True,random_state=42
-    )
-    
-    grid_search = GridSearchCV(
-        estimator=model,
-        param_grid=param_grid,
-        scoring="accuracy",
-        cv=cv,
-        n_jobs=-1
-    )
-    
-    grid_search.fit (X_train,y_train)
-    
-    best_model = grid_search.best_estimator_
+
+    X_train, X_test, y_train, y_test = split_dataset()
+
+    best_model, best_params, best_score = tune_hyperparameters()
     y_pred = best_model.predict(X_test)
-    
+
     print("\n===== Model Test Evaluation =====")
-    print(f"Best parameters: {grid_search.best_params_}")
-    print(f"Mean CV accuracy: {grid_search.best_score_:.4f}")
-    print(f"Test accuracy: {accuracy_score(y_test,y_pred):.4f}")
-    
+    print(f"Best parameters: {best_params}")
+    print(f"Mean CV accuracy: {best_score:.4f}")
+    print(f"Test accuracy: {accuracy_score(y_test, y_pred):.4f}")
+
     print(
         "Malignant precision: "
-        f"{precision_score(y_test,y_pred,pos_label=0):.4f}"
+        f"{precision_score(y_test, y_pred, pos_label=0):.4f}"
     )
-    
     print(
         "Malignant recall: "
-        f"{recall_score(y_test,y_pred,pos_label=0):.4f}"
+        f"{recall_score(y_test, y_pred, pos_label=0):.4f}"
     )
     print(
         "Malignant F1-score: "
-        f"{f1_score(y_test,y_pred,pos_label=0):.4f}"
+        f"{f1_score(y_test, y_pred, pos_label=0):.4f}"
     )
-    
-    print("\nConfusion Matrix (labels=[0,1]):")
-    print(confusion_matrix(y_test,y_pred,labels=[0,1]))
-    
-    print("\nClassification Report: ")
+
+    print("\nConfusion Matrix (labels=[0, 1]):")
+    print(confusion_matrix(y_test, y_pred, labels=[0, 1]))
+
+    print("\nClassification Report:")
     print(
         classification_report(
-            y_test,y_pred,labels=[0,1],target_names=["malignant","benign"],digits=4
+            y_test,
+            y_pred,
+            labels=[0, 1],
+            target_names=["malignant", "benign"],
+            digits=4,
         )
     )
+
     
         
 if __name__=="__main__":
-    tune_hyperparameters()
+    # tune_hyperparameters()
     evaluate_best_model()

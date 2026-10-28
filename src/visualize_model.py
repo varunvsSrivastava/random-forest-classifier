@@ -1,11 +1,13 @@
 
+import joblib
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-from sklearn.metrics import confusion_matrix
-from src.prepare_data import split_dataset
-from src.train_model import train_model
+from pathlib import Path
 from sklearn.datasets import load_breast_cancer
+from sklearn.metrics import confusion_matrix
+
+from src.prepare_data import split_dataset
 
 
 def plot_confusion_matrix(model, X_test, y_test):
@@ -37,7 +39,6 @@ def plot_feature_importance(model):
 
     dataset = load_breast_cancer()
     importances = model.feature_importances_
-
     top_indices = importances.argsort()[-10:][::-1]
 
     plt.figure(figsize=(10, 6))
@@ -55,11 +56,15 @@ def plot_feature_importance(model):
 
 
 if __name__ == "__main__":
-    model, _, X_test, _, y_test = train_model(
-        max_depth=5,
-        min_samples_split=2,
-        min_samples_leaf=1,
-    )
+    model_path = Path("models/random_forest_model.joblib")
+
+    if not model_path.exists():
+        raise FileNotFoundError(
+            "Saved model not found. Run python -m src.save_model first."
+        )
+
+    model = joblib.load(model_path)
+    _, X_test, _, y_test = split_dataset()
 
     plot_confusion_matrix(model, X_test, y_test)
     plot_feature_importance(model)
